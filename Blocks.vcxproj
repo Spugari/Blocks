@@ -150,9 +150,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameobject.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Gameobject.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
