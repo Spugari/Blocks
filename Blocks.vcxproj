@@ -150,19 +150,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Gameobject.cpp" />
-    <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Gameobject.h" />
-    <ClInclude Include="Grid.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="Sources\Game.h" />
+    <ClInclude Include="Sources\Gameobject.h" />
+    <ClInclude Include="Sources\Grid.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Blocks.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sources\Game.cpp" />
+    <ClCompile Include="Sources\Gameobject.cpp" />
+    <ClCompile Include="Sources\Grid.cpp" />
+    <ClCompile Include="Sources\Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
