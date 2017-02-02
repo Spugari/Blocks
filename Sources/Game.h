@@ -11,6 +11,13 @@ class Game
 {
 public:
 
+	struct blockCoords
+	{
+		blockCoords(int x, int y) { this->x = x; this->y = y; }
+		int x;
+		int y;
+	};
+
 	Game(sf::RenderWindow* window);
 	~Game();
 
@@ -20,14 +27,20 @@ public:
 	/** Calls all subscribed draw functions */
 	void Draw();
 	void Update();
+	bool moveLeft();
+	bool moveRight();
 
 private:
 
-	void DropActiveBlock();
+	bool dropActiveBlock();
 
 	//std::map<unsigned, GameObject*> drawnObjects;
 	sf::Clock clock;
 	sf::RectangleShape* gameArea[10][22];
 	void drawGameArea();
 	Grid* grid;
+	bool spawnBlock();
+	std::vector<blockCoords*> activeBlock;
+	sf::Color activeColor;
+
 };

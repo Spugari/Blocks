@@ -17,7 +17,7 @@ Game::Game(sf::RenderWindow* window)
 	for (int i = 0; i < 220; i++)
 	{
 		gameArea[i/22][i%22] = new sf::RectangleShape();
-		gameArea[i / 22][i % 22]->setFillColor(sf::Color::Green);
+		gameArea[i / 22][i % 22]->setFillColor(sf::Color::Transparent);
 		gameArea[i / 22][i % 22]->setSize(sf::Vector2f(30.0f, 30.0f));
 		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i%22) * 30.0f));
 	}
@@ -32,6 +32,8 @@ Game::Game(sf::RenderWindow* window)
 			gameArea[i][j]->setPosition(sf::Vector2f(10.0f + j * 30.0f, 10.0f + i * 30.0f));
 		}
 	}*/
+
+	spawnBlock();
 }
 
 Game::~Game()
@@ -59,6 +61,8 @@ void Game::Draw()
 
 void Game::Update()
 {
+	if (!dropActiveBlock())
+		std::cout << "Could not drop active block!" << std::endl;
 }
 
 /*bool Game::DrawSubscribe(GameObject* asset, unsigned z)
@@ -93,11 +97,85 @@ void Game::Update()
 	return true;
 }*/
 
-void Game::DropActiveBlock()
+bool Game::dropActiveBlock()
 {
+	if (clock.getElapsedTime().asMilliseconds() >= 200)
+	{
+		clock.restart();
+
+		//Check if the block can drop
+		for (blockCoords* blocki : activeBlock)
+		{
+			if (gameArea[blocki->x][blocki->y + 1]->getFillColor() != sf::Color::Transparent || (blocki->y + 1) > 21)
+			{
+				spawnBlock();
+				return false;
+			}
+		}
+
+		for (blockCoords* blocki : activeBlock)
+		{
+			gameArea[blocki->x][blocki->y]->setFillColor(sf::Color::Transparent);
+			blocki->y += 1;
+		}
+		for (blockCoords* blocki : activeBlock)
+		{
+			gameArea[blocki->x][blocki->y]->setFillColor(activeColor);
+		}
+	}
+	return true;
 }
 
-void Game::drawGameArea()
+bool Game::spawnBlock()
 {
+	activeBlock.clear();
+	activeColor = sf::Color::Green;
 
+	for (int i = 3; i <= 6; i++)
+	{
+		gameArea[i][0]->setFillColor(sf::Color::Green);
+		activeBlock.push_back(new blockCoords(i,0));
+	}
+
+	return true;
+}
+
+bool Game::moveLeft()
+{
+	//Check if the block can move left
+	for (blockCoords* blocki : activeBlock)
+	{
+		if (blocki->x == 0)
+			return false;
+		
+		bool cantMove = true;
+		if (gameArea[blocki->x - 1][blocki->y]->getFillColor() != sf::Color::Transparent)
+		{
+			for (blockCoords* otherBlock : activeBlock)
+			{
+				if (blocki == otherBlock)
+					continue;
+				else if (blocki->x - 1 == otherBlock->x && blocki->y == otherBlock->y)
+				{
+					cantMove = false;
+					break;
+				}
+			}
+			if (cantMove)
+				return false;
+		}
+	}
+
+	//The block can move left, so lets move it!
+	for (blockCoords* blocki : activeBlock)
+	{
+		gameArea[blocki->x][blocki->y]->setFillColor(sf::Color::Transparent);
+		blocki->x -= 1;
+	}
+
+	for (blockCoords* blocki : activeBlock)
+	{
+		gameArea[blocki->x][blocki->y]->setFillColor(activeColor);
+	}
+	return true;
 }

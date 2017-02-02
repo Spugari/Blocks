@@ -2,16 +2,10 @@
 
 #include "Gameobject.h"
 
-class Block : public GameObject
+class Block
 {
 public:
-	void Draw();
-	Block(sf::RenderWindow* window);
-	~Block();
-	void DropOneLine();
-	void MoveLeft();
-	void MoveRight();
+	bool SpawnBlock();
 
 private:
-	sf::RectangleShape* block;
 };
