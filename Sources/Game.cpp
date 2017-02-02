@@ -2,27 +2,51 @@
 
 Game::Game()
 {
-	window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Blocks!");
-
-	if (!DrawSubscribe(new Grid(*window), 1))
+	window = new sf::RenderWindow(sf::VideoMode(500, 680), "Blocks!");
+	if (!window)
 	{
-		std::cout << "Failed to subscribe object with z index " << 1 << " ." << std::endl;
+		exit(-1);
+	}
+	grid = new Grid(window);
+
+
+	clock.restart();
+
+	//Clear gamearea
+	for (int i = 0; i < 22; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			sf::RectangleShape* temp = new sf::RectangleShape();
+			temp->setFillColor(sf::Color::Transparent);
+			temp->setSize(sf::Vector2f(30.0f, 30.0f));
+			temp->setPosition(sf::Vector2f(10.0f + j * 30.0f, 10.0f + i * 30.0f));
+			gameArea[i][j] = temp;
+		}
+	}
+}
+
+Game::~Game()
+{
+	for (int i = 0; i < 220; i++)
+	{
+		int asd = i / 22;
+		int bast = i % 22;
+		delete gameArea[i / 22][i % 22];
 	}
 }
 
 void Game::Draw()
 {
-	window->clear();
-
-	for (auto pair : drawnObjects)
-	{
-		(*pair.second).Draw();
-	}
-
-	window->display();
+	this->window->clear(sf::Color(255,0,0,255));
+	this->window->display();
 }
 
-bool Game::DrawSubscribe(GameObject* asset, unsigned z)
+void Game::Update()
+{
+}
+
+/*bool Game::DrawSubscribe(GameObject* asset, unsigned z)
 {
 	try
 	{
@@ -52,4 +76,13 @@ bool Game::DrawSubscribe(GameObject* asset, unsigned z)
 	}
 
 	return true;
+}*/
+
+void Game::DropActiveBlock()
+{
+}
+
+void Game::drawGameArea()
+{
+
 }

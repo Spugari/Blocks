@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Gameobject.h"
 #include "Grid.h"
+#include "Block.h"
 
 class Game
 {
@@ -20,10 +21,15 @@ public:
 	bool DrawUnsubscribe(unsigned z);
 	/** Calls all subscribed draw functions */
 	void Draw();
+	void Update();
 
 private:
 
-	void Update();
+	void DropActiveBlock();
 
-	std::map<unsigned, GameObject*> drawnObjects;
+	//std::map<unsigned, GameObject*> drawnObjects;
+	sf::Clock clock;
+	sf::RectangleShape* gameArea[10][22];
+	void drawGameArea();
+	Grid* grid;
 };

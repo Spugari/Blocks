@@ -1,6 +1,6 @@
 #include "Gameobject.h"
 
-GameObject::GameObject(sf::RenderWindow& window) : window(&window)
+GameObject::GameObject(sf::RenderWindow* window) : window(window)
 {
 }
 

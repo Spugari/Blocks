@@ -4,7 +4,7 @@
 class GameObject
 {
 public:
-	GameObject(sf::RenderWindow& window);
+	GameObject(sf::RenderWindow* window);
 	sf::RenderWindow* window;
 	virtual void Draw();
 
