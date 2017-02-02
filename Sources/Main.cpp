@@ -16,6 +16,8 @@ int main()
 				game->window->close();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left)
 				game->moveLeft();
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right)
+				game->moveRight();
 			if (event.type == sf::Event::Closed)
 				game->window->close();
 		}
