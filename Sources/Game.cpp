@@ -129,19 +129,53 @@ bool Game::dropActiveBlock(int time)
 bool Game::spawnBlock()
 {
 	activeBlock.clear();
-	activeColor = sf::Color::Green;
 
-	/*for (int i = 3; i <= 6; i++)
+	switch (clock.getElapsedTime().asMicroseconds() % 4)
 	{
-		gameArea[i][0]->setFillColor(sf::Color::Green);
-		activeBlock.push_back(new blockCoords(i,0));
-	}*/
-	for (int i = 0; i <= 3; i++)
-	{
-		gameArea[4][i]->setFillColor(activeColor);
-		activeBlock.push_back(new blockCoords(4, i));
+		case 0:
+		{
+			for (int i = 3; i <= 6; i++)
+			{
+				activeColor = sf::Color::Green;
+				gameArea[i][0]->setFillColor(sf::Color::Green);
+				activeBlock.push_back(new blockCoords(i, 0));
+			}
+			break;
+		}
+		case 1:
+		{
+			for (int i = 0; i <= 3; i++)
+			{
+				activeColor = sf::Color::Green;
+				gameArea[4][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(4, i));
+			}
+			break;
+		}
+		case 2:
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				activeColor = sf::Color::Red;
+				gameArea[3 + i][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(3 + i, i));
+				gameArea[4 + i][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(4 + i, i));
+			}
+			break;
+		}
+		case 3:
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				activeColor = sf::Color::Blue;
+				gameArea[3][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(3, i));
+				gameArea[4][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(4, i));
+			}
+		}
 	}
-
 	return true;
 }
 
