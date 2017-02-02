@@ -10,17 +10,28 @@ Game::Game(sf::RenderWindow* window)
 	clock.restart();
 
 	//Clear gamearea
-	for (int i = 0; i < 22; i++)
+
+
+	//Voi vittu matti
+
+	for (int i = 0; i < 220; i++)
+	{
+		gameArea[i/22][i%22] = new sf::RectangleShape();
+		gameArea[i / 22][i % 22]->setFillColor(sf::Color::Green);
+		gameArea[i / 22][i % 22]->setSize(sf::Vector2f(30.0f, 30.0f));
+		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i%22) * 30.0f));
+	}
+
+	/*for (int i = 0; i < 22; i++)
 	{
 		for (int j = 0; j < 10; j++)
 		{
-/*			sf::RectangleShape* temp = new sf::RectangleShape();
-			temp->setFillColor(sf::Color::Transparent);
-			temp->setSize(sf::Vector2f(30.0f, 30.0f));
-			temp->setPosition(sf::Vector2f(10.0f + j * 30.0f, 10.0f + i * 30.0f));
-			gameArea[i][j] = temp;*/
+			gameArea[i][j] = new sf::RectangleShape();
+			gameArea[i][j]->setFillColor(sf::Color::Transparent);
+			gameArea[i][j]->setSize(sf::Vector2f(30.0f, 30.0f));
+			gameArea[i][j]->setPosition(sf::Vector2f(10.0f + j * 30.0f, 10.0f + i * 30.0f));
 		}
-	}
+	}*/
 }
 
 Game::~Game()
@@ -36,6 +47,12 @@ Game::~Game()
 void Game::Draw()
 {
 	this->window->clear();
+
+	for (int i = 0; i < 220; i++)
+	{
+		window->draw((*gameArea[i / 22][i % 22]));
+	}
+
 	this->grid->Draw();
 	this->window->display();
 }
