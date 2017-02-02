@@ -43,5 +43,7 @@ private:
 	bool spawnBlock();
 	std::vector<blockCoords*> activeBlock;
 	sf::Color activeColor;
-
+	void delFullLines();
+	void deleteLine(int index);
+	void dropField(int index);
 };

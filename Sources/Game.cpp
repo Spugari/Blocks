@@ -67,7 +67,11 @@ void Game::Draw()
 void Game::Update()
 {
 	if (!dropActiveBlock(200))
+	{
 		std::cout << "Could not drop active block!" << std::endl;
+		delFullLines();
+		spawnBlock();
+	}
 }
 
 bool Game::dropActiveBlock(int time)
@@ -77,50 +81,44 @@ bool Game::dropActiveBlock(int time)
 		clock.restart();
 
 		//Check if the block can drop
-		for (blockCoords* blocki : activeBlock)
+		for (blockCoords* tile : activeBlock)
 		{
-			if ((blocki->y + 1) > 21)
-			{
-				spawnBlock();
+			if ((tile->y + 1) > 21)
 				return false;
-			}
 
-			for (blockCoords* blocki : activeBlock)
+			for (blockCoords* tile : activeBlock)
 			{
 				//Check if there is free space to move the block
 				bool cantMove = true;
-				if (gameArea[blocki->x][blocki->y + 1]->getFillColor() != sf::Color::Transparent)
+				if (gameArea[tile->x][tile->y + 1]->getFillColor() != sf::Color::Transparent)
 				{
 					//Check if occupied tile is part of current block or not
 					for (blockCoords* otherBlock : activeBlock)
 					{
-						if (blocki == otherBlock)
+						if (tile == otherBlock)
 							continue;
-						else if (blocki->x == otherBlock->x && blocki->y + 1 == otherBlock->y)
+						else if (tile->x == otherBlock->x && tile->y + 1 == otherBlock->y)
 						{
 							cantMove = false;
 							break;
 						}
 					}
 					if (cantMove)
-					{
-						spawnBlock();
 						return false;
-					}
 				}
 			}
 		}
 
 		//Remove block from old location
-		for (blockCoords* blocki : activeBlock)
+		for (blockCoords* tile : activeBlock)
 		{
-			gameArea[blocki->x][blocki->y]->setFillColor(sf::Color::Transparent);
-			blocki->y += 1;
+			gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+			tile->y += 1;
 		}
 		//After removing old block, draw the block at the new location (to prevent block tiles moving on top of each other)
-		for (blockCoords* blocki : activeBlock)
+		for (blockCoords* tile : activeBlock)
 		{
-			gameArea[blocki->x][blocki->y]->setFillColor(activeColor);
+			gameArea[tile->x][tile->y]->setFillColor(activeColor);
 		}
 	}
 	return true;
@@ -182,22 +180,22 @@ bool Game::spawnBlock()
 bool Game::moveLeft()
 {
 	//Check if the block can move left
-	for (blockCoords* blocki : activeBlock)
+	for (blockCoords* tile : activeBlock)
 	{
 		//First check if the block is at the left boundary
-		if (blocki->x == 0)
+		if (tile->x == 0)
 			return false;
 		
 		//Check if there is free space to move the block
 		bool cantMove = true;
-		if (gameArea[blocki->x - 1][blocki->y]->getFillColor() != sf::Color::Transparent)
+		if (gameArea[tile->x - 1][tile->y]->getFillColor() != sf::Color::Transparent)
 		{
 			//Check if occupied tile is part of current block or not
 			for (blockCoords* otherBlock : activeBlock)
 			{
-				if (blocki == otherBlock)
+				if (tile == otherBlock)
 					continue;
-				else if (blocki->x - 1 == otherBlock->x && blocki->y == otherBlock->y)
+				else if (tile->x - 1 == otherBlock->x && tile->y == otherBlock->y)
 				{
 					cantMove = false;
 					break;
@@ -210,16 +208,16 @@ bool Game::moveLeft()
 
 	//The block can move left, so lets move it!
 	//First remove the old block
-	for (blockCoords* blocki : activeBlock)
+	for (blockCoords* tile : activeBlock)
 	{
-		gameArea[blocki->x][blocki->y]->setFillColor(sf::Color::Transparent);
-		blocki->x -= 1;
+		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+		tile->x -= 1;
 	}
 
 	//After removing old block, draw the block at the new location (to prevent block tiles moving on top of each other)
-	for (blockCoords* blocki : activeBlock)
+	for (blockCoords* tile : activeBlock)
 	{
-		gameArea[blocki->x][blocki->y]->setFillColor(activeColor);
+		gameArea[tile->x][tile->y]->setFillColor(activeColor);
 	}
 	return true;
 }
@@ -227,22 +225,22 @@ bool Game::moveLeft()
 bool Game::moveRight()
 {
 	//Check if the block can move right
-	for (blockCoords* blocki : activeBlock)
+	for (blockCoords* tile : activeBlock)
 	{
 		//First check if the block is at the right boundary
-		if (blocki->x == 9)
+		if (tile->x == 9)
 			return false;
 
 		//Check if there is free space to move the block
 		bool cantMove = true;
-		if (gameArea[blocki->x + 1][blocki->y]->getFillColor() != sf::Color::Transparent)
+		if (gameArea[tile->x + 1][tile->y]->getFillColor() != sf::Color::Transparent)
 		{
 			//Check if occupied tile is part of current block or not
 			for (blockCoords* otherBlock : activeBlock)
 			{
-				if (blocki == otherBlock)
+				if (tile == otherBlock)
 					continue;
-				else if (blocki->x + 1 == otherBlock->x && blocki->y == otherBlock->y)
+				else if (tile->x + 1 == otherBlock->x && tile->y == otherBlock->y)
 				{
 					cantMove = false;
 					break;
@@ -255,16 +253,16 @@ bool Game::moveRight()
 
 	//The block can move left, so lets move it!
 	//First remove the old block
-	for (blockCoords* blocki : activeBlock)
+	for (blockCoords* tile : activeBlock)
 	{
-		gameArea[blocki->x][blocki->y]->setFillColor(sf::Color::Transparent);
-		blocki->x += 1;
+		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+		tile->x += 1;
 	}
 
 	//After removing old block, draw the block at the new location (to prevent block tiles moving on top of each other)
-	for (blockCoords* blocki : activeBlock)
+	for (blockCoords* tile : activeBlock)
 	{
-		gameArea[blocki->x][blocki->y]->setFillColor(activeColor);
+		gameArea[tile->x][tile->y]->setFillColor(activeColor);
 	}
 	return true;
 }
@@ -272,4 +270,55 @@ bool Game::moveRight()
 void Game::fastDrop()
 {
 	while (dropActiveBlock(0));
+	delFullLines();
+	spawnBlock();
+}
+
+void Game::delFullLines()
+{
+	std::vector<int> fullLines;
+
+	for (int i = 0; i < 22; i++)
+	{
+		bool fullLine = true;
+		for (int j = 0; j < 10; j++)
+		{
+			if (gameArea[j][i]->getFillColor() == sf::Color::Transparent)
+			{
+				fullLine = false;
+				break;
+			}
+		}
+		if (fullLine)
+			fullLines.push_back(i);
+	}
+
+	if (fullLines.size() == 0)
+		return;
+
+	for (int i : fullLines)
+	{
+		deleteLine(i);
+		dropField(i);
+	}
+}
+
+void Game::deleteLine(int index)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		gameArea[i][index]->setFillColor(sf::Color::Transparent);
+	}
+}
+
+void Game::dropField(int index)
+{
+	for (int i = index - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			gameArea[j][i + 1]->setFillColor(gameArea[j][i]->getFillColor());
+			gameArea[j][i]->setFillColor(sf::Color::Transparent);
+		}
+	}
 }
