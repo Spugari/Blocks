@@ -29,10 +29,11 @@ public:
 	void Update();
 	bool moveLeft();
 	bool moveRight();
+	void fastDrop();
 
 private:
 
-	bool dropActiveBlock();
+	bool dropActiveBlock(int time);
 
 	//std::map<unsigned, GameObject*> drawnObjects;
 	sf::Clock clock;

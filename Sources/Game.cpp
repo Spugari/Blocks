@@ -66,26 +66,48 @@ void Game::Draw()
 
 void Game::Update()
 {
-	if (!dropActiveBlock())
+	if (!dropActiveBlock(200))
 		std::cout << "Could not drop active block!" << std::endl;
 }
 
-bool Game::dropActiveBlock()
+bool Game::dropActiveBlock(int time)
 {
-	if (clock.getElapsedTime().asMilliseconds() >= 200)
+	if (clock.getElapsedTime().asMilliseconds() >= time)
 	{
 		clock.restart();
 
 		//Check if the block can drop
 		for (blockCoords* blocki : activeBlock)
 		{
-			//TODO: CHECK IF TILE BELOW IS PART OF CURRENT BLOCK
-			//OR
-			//DO NOT CHECK BELOW TILES THAT ARE ONTOP OF CURRENT BLOCK
-			if (gameArea[blocki->x][blocki->y + 1]->getFillColor() != sf::Color::Transparent || (blocki->y + 1) > 21)
+			if ((blocki->y + 1) > 21)
 			{
 				spawnBlock();
 				return false;
+			}
+
+			for (blockCoords* blocki : activeBlock)
+			{
+				//Check if there is free space to move the block
+				bool cantMove = true;
+				if (gameArea[blocki->x][blocki->y + 1]->getFillColor() != sf::Color::Transparent)
+				{
+					//Check if occupied tile is part of current block or not
+					for (blockCoords* otherBlock : activeBlock)
+					{
+						if (blocki == otherBlock)
+							continue;
+						else if (blocki->x == otherBlock->x && blocki->y + 1 == otherBlock->y)
+						{
+							cantMove = false;
+							break;
+						}
+					}
+					if (cantMove)
+					{
+						spawnBlock();
+						return false;
+					}
+				}
 			}
 		}
 
@@ -109,10 +131,15 @@ bool Game::spawnBlock()
 	activeBlock.clear();
 	activeColor = sf::Color::Green;
 
-	for (int i = 3; i <= 6; i++)
+	/*for (int i = 3; i <= 6; i++)
 	{
 		gameArea[i][0]->setFillColor(sf::Color::Green);
 		activeBlock.push_back(new blockCoords(i,0));
+	}*/
+	for (int i = 0; i <= 3; i++)
+	{
+		gameArea[4][i]->setFillColor(activeColor);
+		activeBlock.push_back(new blockCoords(4, i));
 	}
 
 	return true;
@@ -206,4 +233,9 @@ bool Game::moveRight()
 		gameArea[blocki->x][blocki->y]->setFillColor(activeColor);
 	}
 	return true;
+}
+
+void Game::fastDrop()
+{
+	while (dropActiveBlock(0));
 }

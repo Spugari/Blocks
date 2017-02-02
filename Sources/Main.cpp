@@ -18,6 +18,8 @@ int main()
 				game->moveLeft();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right)
 				game->moveRight();
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+				game->fastDrop();
 			if (event.type == sf::Event::Closed)
 				game->window->close();
 		}
@@ -25,5 +27,6 @@ int main()
 		game->Update();
 		game->Draw();
 	}
+	delete game;
 	return 0;
 }
