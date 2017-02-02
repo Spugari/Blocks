@@ -2,22 +2,20 @@
 
 Grid::~Grid()
 {
-	delete grid;
-	delete gridOutline;
 }
 
 Grid::Grid(sf::RenderWindow* window) :  GameObject(window)
 {
-	gridOutline = new sf::RectangleShape();
-	grid = new sf::VertexArray();
+	gridOutline = sf::RectangleShape();
+	grid = sf::VertexArray();
 
-	gridOutline->setSize(sf::Vector2f(300, 660));
-	gridOutline->setPosition(sf::Vector2f(10, 10));
-	gridOutline->setOutlineColor(sf::Color::Red);
-	gridOutline->setOutlineThickness(1.0f);
-	gridOutline->setFillColor(sf::Color::Transparent);
+	gridOutline.setSize(sf::Vector2f(300, 660));
+	gridOutline.setPosition(sf::Vector2f(10, 10));
+	gridOutline.setOutlineColor(sf::Color::Red);
+	gridOutline.setOutlineThickness(1.0f);
+	gridOutline.setFillColor(sf::Color::Transparent);
 
-	grid->setPrimitiveType(sf::Lines);
+	grid.setPrimitiveType(sf::Lines);
 
 	//Vertical lines. Yes, I am an idiot and I like manual work.
 	/*grid.append(sf::Vertex(sf::Vector2f(40.0f, 11.0f), sf::Color(255, 255, 255, 128)));
@@ -47,11 +45,11 @@ Grid::Grid(sf::RenderWindow* window) :  GameObject(window)
 	{
 		if (i % 2 == 0)
 		{
-			grid->append(sf::Vertex(sf::Vector2f(pos, 11.0f), sf::Color(255, 255, 255, 128)));
+			grid.append(sf::Vertex(sf::Vector2f(pos, 11.0f), sf::Color(255, 255, 255, 128)));
 		}
 		else
 		{
-			grid->append(sf::Vertex(sf::Vector2f(pos, 669.0f), sf::Color(255, 255, 255, 128)));
+			grid.append(sf::Vertex(sf::Vector2f(pos, 669.0f), sf::Color(255, 255, 255, 128)));
 			pos += 30;
 		}
 	}
@@ -106,11 +104,11 @@ Grid::Grid(sf::RenderWindow* window) :  GameObject(window)
 	{
 		if (i % 2 == 0)
 		{
-			grid->append(sf::Vertex(sf::Vector2f(11.0f, pos), sf::Color(255, 255, 255, 128)));
+			grid.append(sf::Vertex(sf::Vector2f(11.0f, pos), sf::Color(255, 255, 255, 128)));
 		}
 		else
 		{
-			grid->append(sf::Vertex(sf::Vector2f(309.0f, pos), sf::Color(255, 255, 255, 128)));
+			grid.append(sf::Vertex(sf::Vector2f(309.0f, pos), sf::Color(255, 255, 255, 128)));
 			pos += 30;
 		}
 	}
@@ -118,8 +116,8 @@ Grid::Grid(sf::RenderWindow* window) :  GameObject(window)
 
 void Grid::Draw()
 {
-	this->window->draw(*gridOutline);
-	this->window->draw(*grid);
+	this->window->draw(gridOutline);
+	this->window->draw(grid);
 
 	//printf("Vertex %d\n", grid.getVertexCount());
 }

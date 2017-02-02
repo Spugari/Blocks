@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "Gameobject.h"
 
 class Grid : public GameObject
@@ -11,6 +11,6 @@ public:
 	void Draw();
 
 private:
-	sf::RectangleShape* gridOutline;	
-	sf::VertexArray* grid;
+	sf::RectangleShape gridOutline;	
+	sf::VertexArray grid;
 };

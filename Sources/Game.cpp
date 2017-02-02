@@ -1,13 +1,10 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(sf::RenderWindow* window)
 {
-	window = new sf::RenderWindow(sf::VideoMode(500, 680), "Blocks!");
-	if (!window)
-	{
-		exit(-1);
-	}
-	grid = new Grid(window);
+	this->window = window;
+	//this->grid = new Grid(this->window);
+	this->grid = new Grid(window);
 
 
 	clock.restart();
@@ -17,28 +14,29 @@ Game::Game()
 	{
 		for (int j = 0; j < 10; j++)
 		{
-			sf::RectangleShape* temp = new sf::RectangleShape();
+/*			sf::RectangleShape* temp = new sf::RectangleShape();
 			temp->setFillColor(sf::Color::Transparent);
 			temp->setSize(sf::Vector2f(30.0f, 30.0f));
 			temp->setPosition(sf::Vector2f(10.0f + j * 30.0f, 10.0f + i * 30.0f));
-			gameArea[i][j] = temp;
+			gameArea[i][j] = temp;*/
 		}
 	}
 }
 
 Game::~Game()
 {
-	for (int i = 0; i < 220; i++)
+/*	for (int i = 0; i < 220; i++)
 	{
 		int asd = i / 22;
 		int bast = i % 22;
 		delete gameArea[i / 22][i % 22];
-	}
+	}*/
 }
 
 void Game::Draw()
 {
-	this->window->clear(sf::Color(255,0,0,255));
+	this->window->clear();
+	this->grid->Draw();
 	this->window->display();
 }
 
