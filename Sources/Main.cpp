@@ -20,6 +20,8 @@ int main()
 				game->moveRight();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 				game->fastDrop();
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up)
+				game->rotate();
 			if (event.type == sf::Event::Closed)
 				game->window->close();
 		}

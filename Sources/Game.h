@@ -18,6 +18,13 @@ public:
 		int y;
 	};
 
+	enum BlockType
+	{
+		Z,
+		S,
+		L,
+	};
+
 	Game(sf::RenderWindow* window);
 	~Game();
 
@@ -30,6 +37,7 @@ public:
 	bool moveLeft();
 	bool moveRight();
 	void fastDrop();
+	void rotate();
 
 private:
 
@@ -42,6 +50,7 @@ private:
 	Grid* grid;
 	bool spawnBlock();
 	std::vector<blockCoords*> activeBlock;
+	BlockType activeBlockType;
 	sf::Color activeColor;
 	void delFullLines();
 	void deleteLine(int index);

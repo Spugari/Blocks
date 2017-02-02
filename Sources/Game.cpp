@@ -154,6 +154,8 @@ bool Game::spawnBlock()
 		{
 			for (int i = 0; i < 2; i++)
 			{
+				//Z-block
+				activeBlockType = BlockType::Z;
 				activeColor = sf::Color::Red;
 				gameArea[3 + i][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(3 + i, i));
@@ -163,9 +165,10 @@ bool Game::spawnBlock()
 			break;
 		}
 		case 3:
-		{
+		{ 
 			for (int i = 0; i < 2; i++)
 			{
+				//Box
 				activeColor = sf::Color::Blue;
 				gameArea[3][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(3, i));
@@ -322,3 +325,44 @@ void Game::dropField(int index)
 		}
 	}
 }
+
+void Game::rotate()
+{
+	switch (activeBlockType)
+	{
+		case BlockType::Z:
+		{
+			std::vector<blockCoords*> newCoords;
+			blockCoords* center = activeBlock[2];
+
+			//New tile positions
+			newCoords.push_back(new blockCoords(activeBlock[0]->y + center->x - center->y, center->x + center->y - activeBlock[0]->x));
+			newCoords.push_back(new blockCoords(activeBlock[1]->y + center->x - center->y, center->x + center->y - activeBlock[1]->x));
+			newCoords.push_back(new blockCoords(activeBlock[2]->x, activeBlock[2]->y));
+			newCoords.push_back(new blockCoords(activeBlock[3]->y + center->x - center->y, center->x + center->y - activeBlock[3]->x));
+
+			for (blockCoords* tile : activeBlock)
+			{
+				gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+			}
+
+			activeBlock.clear();
+			for (blockCoords* tile : newCoords)
+			{
+				gameArea[tile->x][tile->y]->setFillColor(activeColor);
+				activeBlock.push_back(tile);
+			}
+		}
+	}
+}
+
+/*
+x2 = (y1 + px - py)
+
+y2 = (px + py - x1 - q)
+To rotate the opposite direction:
+
+x2 = (px + py - y1 - q)
+
+y2 = (x1 + py - px)
+*/
