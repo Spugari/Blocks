@@ -406,8 +406,11 @@ bool Game::moveUp()
 
 void Game::fastDrop()
 {
-	while (dropActiveBlock(0));
-	delFullLines();
+	if (gameState == Playing)
+	{
+		while (dropActiveBlock(0));
+		delFullLines();
+	}
 }
 
 void Game::delFullLines()
@@ -467,6 +470,8 @@ void Game::dropField(int index)
 
 void Game::rotate()
 {
+	if (gameState != Playing)
+		return;
 	//Center contains the tile the block rotates around.
 	blockCoords* center;
 
