@@ -80,4 +80,5 @@ private:
 	void dropField(int index);
 	LineAnimation* lineAnim = nullptr;
 	std::vector<int> linesToDelete;
+	void checkGameOver();
 };

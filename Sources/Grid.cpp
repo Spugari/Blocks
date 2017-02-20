@@ -9,13 +9,20 @@ Grid::Grid(sf::RenderWindow* window) :  GameObject(window)
 	gridOutline = sf::RectangleShape();
 	grid = sf::VertexArray();
 
-	gridOutline.setSize(sf::Vector2f(300, 660));
-	gridOutline.setPosition(sf::Vector2f(10, 10));
+	gridOutline.setSize(sf::Vector2f(300, 600));
+	gridOutline.setPosition(sf::Vector2f(10, 70));
 	gridOutline.setOutlineColor(sf::Color::Red);
 	gridOutline.setOutlineThickness(1.0f);
 	gridOutline.setFillColor(sf::Color::Transparent);
 
 	grid.setPrimitiveType(sf::Lines);
+
+	grid.append(sf::Vertex(sf::Vector2f(10.0f, 10.0f), sf::Color(255, 255, 255, 128)));
+	grid.append(sf::Vertex(sf::Vector2f(309.0f, 10.0f), sf::Color(255, 255, 255, 128)));
+	grid.append(sf::Vertex(sf::Vector2f(10.0f, 10.0f), sf::Color(255, 255, 255, 128)));
+	grid.append(sf::Vertex(sf::Vector2f(10.0f, 69.0f), sf::Color(255, 255, 255, 128)));
+	grid.append(sf::Vertex(sf::Vector2f(309.0f, 10.0f), sf::Color(255, 255, 255, 128)));
+	grid.append(sf::Vertex(sf::Vector2f(309.0f, 69.0f), sf::Color(255, 255, 255, 128)));
 
 	//Vertical lines. Yes, I am an idiot and I like manual work.
 	/*grid.append(sf::Vertex(sf::Vector2f(40.0f, 11.0f), sf::Color(255, 255, 255, 128)));

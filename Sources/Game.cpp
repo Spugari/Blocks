@@ -13,10 +13,10 @@ Game::Game(sf::RenderWindow* window)
 
 	for (int i = 0; i < 220; i++)
 	{
-		gameArea[i/22][i%22] = new sf::RectangleShape();
+		gameArea[i / 22][i % 22] = new sf::RectangleShape();
 		gameArea[i / 22][i % 22]->setFillColor(sf::Color::Transparent);
 		gameArea[i / 22][i % 22]->setSize(sf::Vector2f(30.0f, 30.0f));
-		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i%22) * 30.0f));
+		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i % 22) * 30.0f));
 	}
 
 	/*for (int i = 0; i < 22; i++)
@@ -114,6 +114,7 @@ bool Game::dropActiveBlock(int time)
 			if ((tile->y + 1) > 21)
 			{
 				activeBlock.clear();
+				checkGameOver();
 				return false;
 			}
 
@@ -137,6 +138,7 @@ bool Game::dropActiveBlock(int time)
 					if (cantMove)
 					{
 						activeBlock.clear();
+						checkGameOver();
 						return false;
 					}
 				}
@@ -163,7 +165,7 @@ bool Game::spawnBlock()
 {
 	activeBlock.clear();
 
-	switch (clock.getElapsedTime().asMicroseconds() % 8)
+	switch (clock.getElapsedTime().asMicroseconds() % 7)
 	{
 		case 0:
 		{
@@ -180,19 +182,6 @@ bool Game::spawnBlock()
 		}
 		case 1:
 		{
-			//I-block
-			activeBlockType = BlockType::I;
-			activeColor = sf::Color::Cyan;
-
-			for (int i = 0; i <= 3; i++)
-			{
-				gameArea[4][i]->setFillColor(activeColor);
-				activeBlock.push_back(new blockCoords(4, i));
-			}
-			break;
-		}
-		case 2:
-		{
 			//Z-block
 			activeBlockType = BlockType::Z;
 
@@ -206,7 +195,7 @@ bool Game::spawnBlock()
 			}
 			break;
 		}
-		case 3:
+		case 2:
 		{
 			//Box
 			activeBlockType = BlockType::S;
@@ -214,14 +203,14 @@ bool Game::spawnBlock()
 
 			for (int i = 0; i < 2; i++)
 			{
-				gameArea[3][i]->setFillColor(activeColor);
-				activeBlock.push_back(new blockCoords(3, i));
 				gameArea[4][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(4, i));
+				gameArea[5][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(5, i));
 			}
 			break;
 		}
-		case 4:
+		case 3:
 		{
 			//L type1
 			activeBlockType = BlockType::L;
@@ -237,7 +226,7 @@ bool Game::spawnBlock()
 			gameArea[5][1]->setFillColor(activeColor);
 			break;
 		}
-		case 5:
+		case 4:
 		{
 			//L type2
 			activeBlockType = BlockType::L2;
@@ -253,7 +242,7 @@ bool Game::spawnBlock()
 			gameArea[3][0]->setFillColor(activeColor);
 			break;
 		}
-		case 6:
+		case 5:
 		{
 			//Z type 2
 			activeBlockType = BlockType::Z2;
@@ -268,7 +257,7 @@ bool Game::spawnBlock()
 			}
 			break;
 		}
-		case 7:
+		case 6:
 		{
 			//T
 			activeBlockType = BlockType::T;
@@ -727,4 +716,16 @@ bool Game::canRotate(std::vector<blockCoords*> block)
 	}
 
 	return true;
+}
+
+void Game::checkGameOver()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			if (gameArea[j][i]->getFillColor() != sf::Color::Transparent)
+				gameState = Animating;
+		}
+	}
 }
