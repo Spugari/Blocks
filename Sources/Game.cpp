@@ -132,6 +132,9 @@ bool Game::spawnBlock()
 	{
 		case 0:
 		{
+			//I-block
+			activeBlockType = BlockType::I;
+
 			for (int i = 3; i <= 6; i++)
 			{
 				activeColor = sf::Color::Green;
@@ -142,6 +145,9 @@ bool Game::spawnBlock()
 		}
 		case 1:
 		{
+			//I-block
+			activeBlockType = BlockType::I;
+
 			for (int i = 0; i <= 3; i++)
 			{
 				activeColor = sf::Color::Green;
@@ -152,10 +158,11 @@ bool Game::spawnBlock()
 		}
 		case 2:
 		{
+			//Z-block
+			activeBlockType = BlockType::Z;
+
 			for (int i = 0; i < 2; i++)
 			{
-				//Z-block
-				activeBlockType = BlockType::Z;
 				activeColor = sf::Color::Red;
 				gameArea[3 + i][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(3 + i, i));
@@ -165,10 +172,12 @@ bool Game::spawnBlock()
 			break;
 		}
 		case 3:
-		{ 
+		{
+			//Box
+			activeBlockType = BlockType::S;
+
 			for (int i = 0; i < 2; i++)
 			{
-				//Box
 				activeColor = sf::Color::Blue;
 				gameArea[3][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(3, i));
@@ -328,31 +337,57 @@ void Game::dropField(int index)
 
 void Game::rotate()
 {
+	//Center contains the tile the block rotates around.
+	blockCoords* center;
+
 	switch (activeBlockType)
 	{
+		case BlockType::S:
+		{
+			//No need to rotate square block.
+			return;
+		}
 		case BlockType::Z:
 		{
-			std::vector<blockCoords*> newCoords;
-			blockCoords* center = activeBlock[2];
-
-			//New tile positions
-			newCoords.push_back(new blockCoords(activeBlock[0]->y + center->x - center->y, center->x + center->y - activeBlock[0]->x));
-			newCoords.push_back(new blockCoords(activeBlock[1]->y + center->x - center->y, center->x + center->y - activeBlock[1]->x));
-			newCoords.push_back(new blockCoords(activeBlock[2]->x, activeBlock[2]->y));
-			newCoords.push_back(new blockCoords(activeBlock[3]->y + center->x - center->y, center->x + center->y - activeBlock[3]->x));
-
-			for (blockCoords* tile : activeBlock)
-			{
-				gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
-			}
-
-			activeBlock.clear();
-			for (blockCoords* tile : newCoords)
-			{
-				gameArea[tile->x][tile->y]->setFillColor(activeColor);
-				activeBlock.push_back(tile);
-			}
+			center = activeBlock[2];
+			break;
 		}
+		case BlockType::I:
+		{
+			center = activeBlock[2];
+			break;
+		}
+		default:
+		{
+			std::cout << "WARNING: Unknown BlockType in Game::rotate()!" << std::endl;
+			return;
+		}
+	}
+
+	std::vector<blockCoords*> newCoords;
+
+	//New tile positions
+	newCoords.push_back(new blockCoords(activeBlock[0]->y + center->x - center->y, center->x + center->y - activeBlock[0]->x));
+	newCoords.push_back(new blockCoords(activeBlock[1]->y + center->x - center->y, center->x + center->y - activeBlock[1]->x));
+	newCoords.push_back(new blockCoords(activeBlock[2]->x, activeBlock[2]->y));
+	newCoords.push_back(new blockCoords(activeBlock[3]->y + center->x - center->y, center->x + center->y - activeBlock[3]->x));
+
+	for (blockCoords* tile : newCoords)
+	{
+
+	}
+	
+	//Potential memory leak?
+	for (blockCoords* tile : activeBlock)
+	{
+		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+	}
+
+	activeBlock.clear();
+	for (blockCoords* tile : newCoords)
+	{
+		gameArea[tile->x][tile->y]->setFillColor(activeColor);
+		activeBlock.push_back(tile);
 	}
 }
 

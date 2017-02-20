@@ -23,6 +23,7 @@ public:
 		Z,
 		S,
 		L,
+		I
 	};
 
 	Game(sf::RenderWindow* window);
