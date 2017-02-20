@@ -11,9 +11,6 @@ Game::Game(sf::RenderWindow* window)
 
 	//Clear gamearea
 
-
-	//Voi vittu matti
-
 	for (int i = 0; i < 220; i++)
 	{
 		gameArea[i/22][i%22] = new sf::RectangleShape();
@@ -279,6 +276,37 @@ bool Game::moveRight()
 	return true;
 }
 
+bool Game::moveUp()
+{
+	std::vector<blockCoords*> newCoords;
+
+	for (blockCoords* tile : activeBlock)
+	{
+		newCoords.push_back(new blockCoords(tile->x, tile->y - 1));
+	}
+
+	/*for (blockCoords* tile : newCoords)
+	{
+		if (gameArea[tile->x][tile->y]->getFillColor() != sf::Color::Transparent)
+		{
+			return false;
+		}
+	}*/
+
+	for (blockCoords* tile : activeBlock)
+	{
+		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+		tile->y -= 1;
+	}
+
+	for (blockCoords* tile : activeBlock)
+	{
+		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+	}
+
+	return true;
+}
+
 void Game::fastDrop()
 {
 	while (dropActiveBlock(0));
@@ -365,6 +393,7 @@ void Game::rotate()
 	}
 
 	std::vector<blockCoords*> newCoords;
+	std::vector<blockCoords*> testCoords;
 
 	//New tile positions
 	newCoords.push_back(new blockCoords(activeBlock[0]->y + center->x - center->y, center->x + center->y - activeBlock[0]->x));
@@ -373,11 +402,127 @@ void Game::rotate()
 	newCoords.push_back(new blockCoords(activeBlock[3]->y + center->x - center->y, center->x + center->y - activeBlock[3]->x));
 
 	for (blockCoords* tile : newCoords)
-	{
+		testCoords.push_back(new blockCoords(tile->x, tile->y));
 
+	//Clear old block
+	for (blockCoords* tile : activeBlock)
+		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
+
+	//Check if new pos is valid
+	if (canRotate(newCoords))
+		return;
+
+	for (blockCoords* tile : newCoords)
+	{
+		if (tile->x < 0)
+		{
+			for (blockCoords* asd : testCoords)
+				asd->x += 1;
+
+			if (canRotate(testCoords))
+				return;
+		}
+
+		if (tile->x > 9)
+		{
+			for (blockCoords* asd : testCoords)
+				asd->x -= 1;
+
+			if (canRotate(testCoords))
+				return;
+		}
 	}
+
+	//Could not rotate the block, place it back to old place
+	for (blockCoords* tile : activeBlock)
+		gameArea[tile->x][tile->y]->setFillColor(activeColor);
+
+	/*if (!canRotate(newCoords))
+	{
+		for (blockCoords* tile : newCoords)
+			tile->x += 1;
+
+		if (!canRotate(newCoords))
+		{
+			for (blockCoords* tile : newCoords)
+				tile->x -= 2;
+
+			if (!canRotate(newCoords))
+			{
+				for (blockCoords* tile : newCoords)
+					tile->x += 1;
+
+				while (!canRotate)
+				{
+
+				}
+			}
+		}
+	}*/
+
+	/*//What do if the rotated block doesn't fit :(
+	if (!canRotate)
+	{
+		canRotate = true;
+		//First try moving the block right (yes it is right biased)
+		for (blockCoords* tile : newCoords)
+		{
+			if (tile->x + 1 > 9 || gameArea[tile->x + 1][tile->y]->getFillColor() != sf::Color::Transparent)
+			{
+				canRotate = false;
+				break;
+			}
+		}
+
+		//Couldn't go right, lets try left
+		if (!canRotate)
+		{
+
+		}
+	}*/
+
+	/*for (blockCoords* tile : newCoords)
+	{
+		bool sameBlock = false;
+		for (blockCoords* asd : activeBlock)
+		{
+			if (asd->x == tile->x && asd->y == tile->y)
+			{
+				sameBlock = true;
+				break;
+			}
+		}
+		if (sameBlock)
+			continue;
+
+		if (tile->x < 0)
+		{
+			if (!moveRight())
+				moveUp();
+			rotate();
+			return;
+		}
+		else if (tile->x > 9)
+		{
+			if (!moveLeft())
+				moveUp();
+			rotate();
+			return;
+		}
+		else if (gameArea[tile->x][tile->y]->getFillColor() != sf::Color::Transparent)
+		{
+			if (!moveRight())
+				if (!moveLeft())
+					moveUp();
+			rotate();
+			return;
+			//moveUp();
+			//rotate();
+			//return;
+		}
+	}*/
 	
-	//Potential memory leak?
+	/*//Potential memory leak?
 	for (blockCoords* tile : activeBlock)
 	{
 		gameArea[tile->x][tile->y]->setFillColor(sf::Color::Transparent);
@@ -388,7 +533,31 @@ void Game::rotate()
 	{
 		gameArea[tile->x][tile->y]->setFillColor(activeColor);
 		activeBlock.push_back(tile);
+	}*/
+}
+
+bool Game::canRotate(std::vector<blockCoords*> block)
+{
+	//Check if there is anything blocking the rotation
+	for (blockCoords* tile : block)
+	{
+		if (tile->x < 0)
+			return false;
+		else if (tile->x > 9)
+			return false;
+		else if (gameArea[tile->x][tile->y]->getFillColor() != sf::Color::Transparent)
+			return false;
 	}
+	
+	//Set the block in it's new place if it can rotate
+	activeBlock.clear();
+	for (blockCoords* tile : block)
+	{
+		gameArea[tile->x][tile->y]->setFillColor(activeColor);
+		activeBlock.push_back(tile);
+	}
+
+	return true;
 }
 
 /*

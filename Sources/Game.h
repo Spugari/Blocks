@@ -37,8 +37,10 @@ public:
 	void Update();
 	bool moveLeft();
 	bool moveRight();
+	bool moveUp();
 	void fastDrop();
 	void rotate();
+	bool canRotate(std::vector<blockCoords*> block);
 
 private:
 
