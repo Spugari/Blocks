@@ -433,6 +433,16 @@ void Game::rotate()
 		}
 	}
 
+	//Try one or two block up
+	for (int i = 0; i < 2; i++)
+	{
+		for (blockCoords* tile : testCoords)
+			tile->y -= 1;
+
+		if (canRotate(testCoords))
+			return;
+	}
+
 	//Could not rotate the block, place it back to old place
 	for (blockCoords* tile : activeBlock)
 		gameArea[tile->x][tile->y]->setFillColor(activeColor);
@@ -544,6 +554,8 @@ bool Game::canRotate(std::vector<blockCoords*> block)
 		if (tile->x < 0)
 			return false;
 		else if (tile->x > 9)
+			return false;
+		else if (tile->y > 21)
 			return false;
 		else if (gameArea[tile->x][tile->y]->getFillColor() != sf::Color::Transparent)
 			return false;
