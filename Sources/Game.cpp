@@ -63,7 +63,9 @@ void Game::Draw()
 
 void Game::Update()
 {
-	if (!dropActiveBlock(200))
+	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? 200 / 3 : 200;
+
+	if (!dropActiveBlock(dropTime))
 	{
 		std::cout << "Could not drop active block!" << std::endl;
 		delFullLines();
@@ -131,11 +133,11 @@ bool Game::spawnBlock()
 		{
 			//I-block
 			activeBlockType = BlockType::I;
+			activeColor = sf::Color::Cyan;
 
 			for (int i = 3; i <= 6; i++)
 			{
-				activeColor = sf::Color::Green;
-				gameArea[i][0]->setFillColor(sf::Color::Green);
+				gameArea[i][0]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(i, 0));
 			}
 			break;
@@ -144,10 +146,10 @@ bool Game::spawnBlock()
 		{
 			//I-block
 			activeBlockType = BlockType::I;
+			activeColor = sf::Color::Cyan;
 
 			for (int i = 0; i <= 3; i++)
 			{
-				activeColor = sf::Color::Green;
 				gameArea[4][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(4, i));
 			}
@@ -172,10 +174,10 @@ bool Game::spawnBlock()
 		{
 			//Box
 			activeBlockType = BlockType::S;
+			activeColor = sf::Color::Yellow;
 
 			for (int i = 0; i < 2; i++)
 			{
-				activeColor = sf::Color::Blue;
 				gameArea[3][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(3, i));
 				gameArea[4][i]->setFillColor(activeColor);
@@ -381,6 +383,22 @@ void Game::fastDrop()
 void Game::delFullLines()
 {
 	std::vector<int> fullLines;
+
+	/*for (int i = 21; i > 0; i--)
+	{
+		bool fullLine = true;
+		for (int j = 0; j < 10; j++)
+		{
+			if (gameArea[j][i]->getFillColor() == sf::Color::Transparent)
+			{
+				fullLine = false;
+				break;
+			}
+		}
+		if (fullLine)
+			fullLines.push_back(i);
+	}*/
+
 
 	for (int i = 0; i < 22; i++)
 	{
