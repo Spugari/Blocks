@@ -56,6 +56,7 @@ void Game::Draw()
 	}
 
 	this->grid->Draw();
+	window->draw(*hud.GetDrawable());
 	this->window->display();
 }
 
@@ -87,6 +88,8 @@ void Game::Update()
 					dropField(i);
 				}
 
+				hud.AddClearedLines(linesToDelete.size());
+
 				delete lineAnim;
 				lineAnim = nullptr;
 				gameState = Playing;
@@ -95,6 +98,8 @@ void Game::Update()
 				lineAnim->Animate();
 		}
 	}
+
+	hud.Update();
 }
 
 bool Game::dropActiveBlock(int time)

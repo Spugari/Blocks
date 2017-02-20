@@ -7,6 +7,7 @@
 #include "Grid.h"
 #include "Block.h"
 #include "LineAnimation.h"
+#include "HUD.h"
 
 class Game
 {
@@ -69,6 +70,7 @@ private:
 	sf::RectangleShape* gameArea[10][22];
 	void drawGameArea();
 	Grid* grid;
+	HUD hud;
 	bool spawnBlock();
 	std::vector<blockCoords*> activeBlock;
 	BlockType activeBlockType;
