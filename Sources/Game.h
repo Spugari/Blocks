@@ -16,6 +16,13 @@ public:
 		blockCoords(int x, int y) { this->x = x; this->y = y; }
 		int x;
 		int y;
+
+		bool operator==(const blockCoords& b)
+		{
+			if (b.x == this->x && b.y == this->y)
+				return true;
+			return false;
+		}
 	};
 
 	enum BlockType
@@ -23,6 +30,7 @@ public:
 		Z,
 		S,
 		L,
+		L2,
 		I
 	};
 

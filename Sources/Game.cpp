@@ -125,7 +125,7 @@ bool Game::spawnBlock()
 {
 	activeBlock.clear();
 
-	switch (clock.getElapsedTime().asMicroseconds() % 4)
+	switch (clock.getElapsedTime().asMicroseconds() % 6)
 	{
 		case 0:
 		{
@@ -181,6 +181,39 @@ bool Game::spawnBlock()
 				gameArea[4][i]->setFillColor(activeColor);
 				activeBlock.push_back(new blockCoords(4, i));
 			}
+			break;
+		}
+		case 4:
+		{
+			//L type1
+			activeBlockType = BlockType::L;
+			activeColor = sf::Color(244, 179, 66);
+
+			activeBlock.push_back(new blockCoords(5, 0));
+			activeBlock.push_back(new blockCoords(3, 1));
+			activeBlock.push_back(new blockCoords(4, 1));
+			activeBlock.push_back(new blockCoords(5, 1));
+			gameArea[5][0]->setFillColor(activeColor);
+			gameArea[3][1]->setFillColor(activeColor);
+			gameArea[4][1]->setFillColor(activeColor);
+			gameArea[5][1]->setFillColor(activeColor);
+			break;
+		}
+		case 5:
+		{
+			//L type2
+			activeBlockType = BlockType::L2;
+			activeColor = sf::Color::Blue;
+
+			activeBlock.push_back(new blockCoords(3, 0));
+			activeBlock.push_back(new blockCoords(3, 1));
+			activeBlock.push_back(new blockCoords(4, 1));
+			activeBlock.push_back(new blockCoords(5, 1));
+			gameArea[5][1]->setFillColor(activeColor);
+			gameArea[3][1]->setFillColor(activeColor);
+			gameArea[4][1]->setFillColor(activeColor);
+			gameArea[3][0]->setFillColor(activeColor);
+			break;
 		}
 	}
 	return true;
@@ -385,6 +418,16 @@ void Game::rotate()
 			center = activeBlock[2];
 			break;
 		}
+		case BlockType::L:
+		{
+			center = activeBlock[2];
+			break;
+		}
+		case BlockType::L2:
+		{
+			center = activeBlock[2];
+			break;
+		}
 		default:
 		{
 			std::cout << "WARNING: Unknown BlockType in Game::rotate()!" << std::endl;
@@ -395,11 +438,36 @@ void Game::rotate()
 	std::vector<blockCoords*> newCoords;
 	std::vector<blockCoords*> testCoords;
 
+	bool asd = center == activeBlock[2];
+
 	//New tile positions
-	newCoords.push_back(new blockCoords(activeBlock[0]->y + center->x - center->y, center->x + center->y - activeBlock[0]->x));
+	for (blockCoords* tile : activeBlock)
+	{
+		if (tile == center)
+			newCoords.push_back(new blockCoords(*tile));
+		/*else
+			newCoords.push_back(new blockCoords(tile->y + center->x - center->y, center->x + center->y - tile->x));*/
+		else
+			newCoords.push_back(new blockCoords(center->x + center->y - tile->y, tile->x + center->y - center->x));
+	}
+
+
+	/*
+	x2 = (y1 + px - py)
+
+	y2 = (px + py - x1 - q)
+	To rotate the opposite direction:
+
+	x2 = (px + py - y1 - q)
+
+	y2 = (x1 + py - px)
+	*/
+
+
+	/*newCoords.push_back(new blockCoords(activeBlock[0]->y + center->x - center->y, center->x + center->y - activeBlock[0]->x));
 	newCoords.push_back(new blockCoords(activeBlock[1]->y + center->x - center->y, center->x + center->y - activeBlock[1]->x));
 	newCoords.push_back(new blockCoords(activeBlock[2]->x, activeBlock[2]->y));
-	newCoords.push_back(new blockCoords(activeBlock[3]->y + center->x - center->y, center->x + center->y - activeBlock[3]->x));
+	newCoords.push_back(new blockCoords(activeBlock[3]->y + center->x - center->y, center->x + center->y - activeBlock[3]->x));*/
 
 	for (blockCoords* tile : newCoords)
 		testCoords.push_back(new blockCoords(tile->x, tile->y));
@@ -433,7 +501,7 @@ void Game::rotate()
 		}
 	}
 
-	//Try one or two block up
+	//Try one or two blocks up
 	for (int i = 0; i < 2; i++)
 	{
 		for (blockCoords* tile : testCoords)
@@ -443,7 +511,7 @@ void Game::rotate()
 			return;
 	}
 
-	//Could not rotate the block, place it back to old place
+	//Could not rotate the block, place it back to old place 
 	for (blockCoords* tile : activeBlock)
 		gameArea[tile->x][tile->y]->setFillColor(activeColor);
 
@@ -571,14 +639,3 @@ bool Game::canRotate(std::vector<blockCoords*> block)
 
 	return true;
 }
-
-/*
-x2 = (y1 + px - py)
-
-y2 = (px + py - x1 - q)
-To rotate the opposite direction:
-
-x2 = (px + py - y1 - q)
-
-y2 = (x1 + py - px)
-*/
