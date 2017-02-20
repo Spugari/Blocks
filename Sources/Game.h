@@ -6,6 +6,7 @@
 #include "Gameobject.h"
 #include "Grid.h"
 #include "Block.h"
+#include "LineAnimation.h"
 
 class Game
 {
@@ -36,6 +37,12 @@ public:
 		T
 	};
 
+	enum GameState
+	{
+		Playing,
+		Animating
+	};
+
 	Game(sf::RenderWindow* window);
 	~Game();
 
@@ -55,9 +62,10 @@ public:
 private:
 
 	bool dropActiveBlock(int time);
-
+	GameState gameState = Playing;
 	//std::map<unsigned, GameObject*> drawnObjects;
 	sf::Clock clock;
+	sf::Clock animTimer;
 	sf::RectangleShape* gameArea[10][22];
 	void drawGameArea();
 	Grid* grid;
@@ -68,4 +76,6 @@ private:
 	void delFullLines();
 	void deleteLine(int index);
 	void dropField(int index);
+	LineAnimation* lineAnim = nullptr;
+	std::vector<int> linesToDelete;
 };

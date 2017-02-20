@@ -29,8 +29,6 @@ Game::Game(sf::RenderWindow* window)
 			gameArea[i][j]->setPosition(sf::Vector2f(10.0f + j * 30.0f, 10.0f + i * 30.0f));
 		}
 	}*/
-
-	spawnBlock();
 }
 
 Game::~Game()
@@ -65,11 +63,37 @@ void Game::Update()
 {
 	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? 200 / 3 : 200;
 
-	if (!dropActiveBlock(dropTime))
+	if (gameState == Playing)
 	{
-		std::cout << "Could not drop active block!" << std::endl;
-		delFullLines();
-		spawnBlock();
+		if (activeBlock.empty())
+			spawnBlock();
+
+		if (!dropActiveBlock(dropTime))
+		{
+			std::cout << "Could not drop active block!" << std::endl;
+			delFullLines();
+		}
+	}
+
+	if (gameState == Animating)
+	{
+		if (lineAnim != nullptr)
+		{
+			if (lineAnim->IsFinished())
+			{	
+				for (int i : linesToDelete)
+				{
+					deleteLine(i);
+					dropField(i);
+				}
+
+				delete lineAnim;
+				lineAnim = nullptr;
+				gameState = Playing;
+			}
+			else 
+				lineAnim->Animate();
+		}
 	}
 }
 
@@ -83,7 +107,10 @@ bool Game::dropActiveBlock(int time)
 		for (blockCoords* tile : activeBlock)
 		{
 			if ((tile->y + 1) > 21)
+			{
+				activeBlock.clear();
 				return false;
+			}
 
 			for (blockCoords* tile : activeBlock)
 			{
@@ -103,7 +130,10 @@ bool Game::dropActiveBlock(int time)
 						}
 					}
 					if (cantMove)
+					{
+						activeBlock.clear();
 						return false;
+					}
 				}
 			}
 		}
@@ -119,6 +149,7 @@ bool Game::dropActiveBlock(int time)
 		{
 			gameArea[tile->x][tile->y]->setFillColor(activeColor);
 		}
+
 	}
 	return true;
 }
@@ -377,28 +408,11 @@ void Game::fastDrop()
 {
 	while (dropActiveBlock(0));
 	delFullLines();
-	spawnBlock();
 }
 
 void Game::delFullLines()
 {
-	std::vector<int> fullLines;
-
-	/*for (int i = 21; i > 0; i--)
-	{
-		bool fullLine = true;
-		for (int j = 0; j < 10; j++)
-		{
-			if (gameArea[j][i]->getFillColor() == sf::Color::Transparent)
-			{
-				fullLine = false;
-				break;
-			}
-		}
-		if (fullLine)
-			fullLines.push_back(i);
-	}*/
-
+	linesToDelete.clear();
 
 	for (int i = 0; i < 22; i++)
 	{
@@ -412,17 +426,23 @@ void Game::delFullLines()
 			}
 		}
 		if (fullLine)
-			fullLines.push_back(i);
+			linesToDelete.push_back(i);
 	}
 
-	if (fullLines.size() == 0)
+	if (linesToDelete.size() == 0)
 		return;
 
-	for (int i : fullLines)
+	std::vector<sf::RectangleShape*> tiles;
+	for (int line : linesToDelete)
 	{
-		deleteLine(i);
-		dropField(i);
+		for (int i = 0; i < 10; i++)
+		{
+			tiles.push_back(gameArea[i][line]);
+		}
 	}
+
+	lineAnim = new LineAnimation(tiles);
+	gameState = Animating;
 }
 
 void Game::deleteLine(int index)
