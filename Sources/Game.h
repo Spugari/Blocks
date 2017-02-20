@@ -28,10 +28,12 @@ public:
 	enum BlockType
 	{
 		Z,
+		Z2,
 		S,
 		L,
 		L2,
-		I
+		I,
+		T
 	};
 
 	Game(sf::RenderWindow* window);

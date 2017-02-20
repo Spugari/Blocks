@@ -125,7 +125,7 @@ bool Game::spawnBlock()
 {
 	activeBlock.clear();
 
-	switch (clock.getElapsedTime().asMicroseconds() % 6)
+	switch (clock.getElapsedTime().asMicroseconds() % 8)
 	{
 		case 0:
 		{
@@ -187,7 +187,7 @@ bool Game::spawnBlock()
 		{
 			//L type1
 			activeBlockType = BlockType::L;
-			activeColor = sf::Color(244, 179, 66);
+			activeColor = sf::Color(255, 128, 0);
 
 			activeBlock.push_back(new blockCoords(5, 0));
 			activeBlock.push_back(new blockCoords(3, 1));
@@ -213,6 +213,37 @@ bool Game::spawnBlock()
 			gameArea[3][1]->setFillColor(activeColor);
 			gameArea[4][1]->setFillColor(activeColor);
 			gameArea[3][0]->setFillColor(activeColor);
+			break;
+		}
+		case 6:
+		{
+			//Z type 2
+			activeBlockType = BlockType::Z2;
+			activeColor = sf::Color::Green;
+
+			for (int i = 0; i < 2; i++)
+			{
+				gameArea[4 - i][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(4 - i, i));
+				gameArea[5 - i][i]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(5 - i, i));
+			}
+			break;
+		}
+		case 7:
+		{
+			//T
+			activeBlockType = BlockType::T;
+			activeColor = sf::Color(153, 0, 204);
+
+			activeBlock.push_back(new blockCoords(4, 0));
+			activeBlock.push_back(new blockCoords(3, 1));
+			activeBlock.push_back(new blockCoords(4, 1));
+			activeBlock.push_back(new blockCoords(5, 1));
+			gameArea[4][0]->setFillColor(activeColor);
+			gameArea[3][1]->setFillColor(activeColor);
+			gameArea[4][1]->setFillColor(activeColor);
+			gameArea[5][1]->setFillColor(activeColor);
 			break;
 		}
 	}
@@ -424,6 +455,16 @@ void Game::rotate()
 			break;
 		}
 		case BlockType::L2:
+		{
+			center = activeBlock[2];
+			break;
+		}
+		case BlockType::Z2:
+		{
+			center = activeBlock[3];
+			break;
+		}
+		case BlockType::T:
 		{
 			center = activeBlock[2];
 			break;
