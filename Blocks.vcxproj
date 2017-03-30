@@ -121,14 +121,17 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\SFML-2.4.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SFML-2.4.1\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,7 +156,12 @@
     <ClInclude Include="Sources\Block.h" />
     <ClInclude Include="Sources\Game.h" />
     <ClInclude Include="Sources\Gameobject.h" />
+    <ClInclude Include="Sources\Gamestate.h" />
     <ClInclude Include="Sources\Grid.h" />
+    <ClInclude Include="Sources\Highscores.h" />
+    <ClInclude Include="Sources\HUD.h" />
+    <ClInclude Include="Sources\LineAnimation.h" />
+    <ClInclude Include="Sources\Menu.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Blocks.rc" />
@@ -163,7 +171,11 @@
     <ClCompile Include="Sources\Game.cpp" />
     <ClCompile Include="Sources\Gameobject.cpp" />
     <ClCompile Include="Sources\Grid.cpp" />
+    <ClCompile Include="Sources\Highscores.cpp" />
+    <ClCompile Include="Sources\HUD.cpp" />
+    <ClCompile Include="Sources\LineAnimation.cpp" />
     <ClCompile Include="Sources\Main.cpp" />
+    <ClCompile Include="Sources\Menu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

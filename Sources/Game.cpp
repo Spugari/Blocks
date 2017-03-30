@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game(sf::RenderWindow* window) : hud(window)
+Game::Game(sf::RenderWindow* window) : hud(window), menu(window, gameState, &highscore)
 {
 	this->window = window;
 	//this->grid = new Grid(this->window);
@@ -18,6 +18,8 @@ Game::Game(sf::RenderWindow* window) : hud(window)
 		gameArea[i / 22][i % 22]->setSize(sf::Vector2f(30.0f, 30.0f));
 		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i % 22) * 30.0f));
 	}
+
+	gameState = GameState::MainMenu;
 
 	/*for (int i = 0; i < 22; i++)
 	{
@@ -50,13 +52,22 @@ void Game::Draw()
 {
 	this->window->clear();
 
-	for (int i = 0; i < 220; i++)
+	if (gameState == GameState::MainMenu || gameState == GameOver || gameState == HighscoreScreen)
 	{
-		window->draw((*gameArea[i / 22][i % 22]));
+		menu.Draw();
 	}
 
-	this->grid->Draw();
-	hud.Draw();
+	if (gameState == GameState::Playing || gameState == Animating)
+	{
+		for (int i = 0; i < 220; i++)
+		{
+			window->draw((*gameArea[i / 22][i % 22]));
+		}
+
+		this->grid->Draw();
+		hud.Draw();
+	}
+
 	this->window->display();
 }
 
@@ -64,7 +75,7 @@ void Game::Update()
 {
 	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? (550 - hud.GetLevel() * 50)  / 3 : 550 - hud.GetLevel() * 50;
 
-	if (gameState == Playing)
+	if (gameState == GameState::Playing)
 	{
 		if (activeBlock.empty())
 			spawnBlock();
@@ -76,7 +87,21 @@ void Game::Update()
 		}
 	}
 
-	if (gameState == Animating)
+	if (gameState == GameOver)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+		{
+			restart();
+			gameState = MainMenu;
+		}
+	}
+
+	if (gameState == GameState::MainMenu || gameState == HighscoreScreen)
+	{
+		menu.Update();
+	}
+
+	if (gameState == GameState::Animating)
 	{
 		if (lineAnim != nullptr)
 		{
@@ -93,7 +118,7 @@ void Game::Update()
 
 				delete lineAnim;
 				lineAnim = nullptr;
-				gameState = Playing;
+				gameState = GameState::Playing;
 			}
 			else 
 				lineAnim->Animate();
@@ -401,7 +426,7 @@ bool Game::moveUp()
 
 void Game::fastDrop()
 {
-	if (gameState == Playing)
+	if (gameState == GameState::Playing)
 	{
 		while (dropActiveBlock(0));
 		delFullLines();
@@ -440,7 +465,7 @@ void Game::delFullLines()
 	}
 
 	lineAnim = new LineAnimation(tiles);
-	gameState = Animating;
+	gameState = GameState::Animating;
 }
 
 void Game::deleteLine(int index)
@@ -465,7 +490,7 @@ void Game::dropField(int index)
 
 void Game::rotate()
 {
-	if (gameState != Playing)
+	if (gameState != GameState::Playing)
 		return;
 	//Center contains the tile the block rotates around.
 	blockCoords* center;
@@ -739,7 +764,22 @@ void Game::checkGameOver()
 		for (int j = 0; j < 10; j++)
 		{
 			if (gameArea[j][i]->getFillColor() != sf::Color::Transparent)
-				gameState = Animating;
+			{
+				gameState = GameState::GameOver;
+   				highscore.AddHighscore(hud.GetLines());
+				return;
+			}
 		}
+	}
+}
+
+void Game::restart()
+{
+	for (int i = 0; i < 220; i++)
+	{
+		gameArea[i / 22][i % 22] = new sf::RectangleShape();
+		gameArea[i / 22][i % 22]->setFillColor(sf::Color::Transparent);
+		gameArea[i / 22][i % 22]->setSize(sf::Vector2f(30.0f, 30.0f));
+		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i % 22) * 30.0f));
 	}
 }

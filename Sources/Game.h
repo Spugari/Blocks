@@ -8,6 +8,9 @@
 #include "Block.h"
 #include "LineAnimation.h"
 #include "HUD.h"
+#include "Menu.h"
+#include "Gamestate.h"
+#include "Highscores.h"
 
 class Game
 {
@@ -38,12 +41,8 @@ public:
 		T
 	};
 
-	enum GameState
-	{
-		Playing,
-		Animating
-	};
-
+	GameState gameState = MainMenu;
+	
 	Game(sf::RenderWindow* window);
 	~Game();
 
@@ -63,7 +62,6 @@ public:
 private:
 
 	bool dropActiveBlock(int time);
-	GameState gameState = Playing;
 	//std::map<unsigned, GameObject*> drawnObjects;
 	sf::Clock clock;
 	sf::Clock animTimer;
@@ -81,4 +79,7 @@ private:
 	LineAnimation* lineAnim = nullptr;
 	std::vector<int> linesToDelete;
 	void checkGameOver();
+	Menu menu;
+	Highscores highscore;
+	void restart();
 };
