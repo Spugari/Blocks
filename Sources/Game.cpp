@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game(sf::RenderWindow* window)
+Game::Game(sf::RenderWindow* window) : hud(window)
 {
 	this->window = window;
 	//this->grid = new Grid(this->window);
@@ -56,13 +56,13 @@ void Game::Draw()
 	}
 
 	this->grid->Draw();
-	window->draw(*hud.GetDrawable());
+	hud.Draw();
 	this->window->display();
 }
 
 void Game::Update()
 {
-	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? 200 / 3 : 200;
+	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? (550 - hud.GetLevel() * 50)  / 3 : 550 - hud.GetLevel() * 50;
 
 	if (gameState == Playing)
 	{
@@ -89,6 +89,7 @@ void Game::Update()
 				}
 
 				hud.AddClearedLines(linesToDelete.size());
+				hud.SetLevel(1 + hud.GetLines() / 10);
 
 				delete lineAnim;
 				lineAnim = nullptr;
@@ -175,8 +176,8 @@ bool Game::spawnBlock()
 
 			for (int i = 3; i <= 6; i++)
 			{
-				gameArea[i][0]->setFillColor(activeColor);
-				activeBlock.push_back(new blockCoords(i, 0));
+				gameArea[i][1]->setFillColor(activeColor);
+				activeBlock.push_back(new blockCoords(i, 1));
 			}
 			break;
 		}
@@ -577,7 +578,18 @@ void Game::rotate()
 			if (canRotate(testCoords))
 				return;
 		}
+
+		if (tile->y < 0)
+		{
+			for (blockCoords* asd : testCoords)
+				asd->y += 1;
+
+			if (canRotate(testCoords))
+				return;
+		}
 	}
+
+	
 
 	//Try one or two blocks up
 	for (int i = 0; i < 2; i++)
@@ -702,6 +714,8 @@ bool Game::canRotate(std::vector<blockCoords*> block)
 		else if (tile->x > 9)
 			return false;
 		else if (tile->y > 21)
+			return false;
+		else if (tile->y < 0)
 			return false;
 		else if (gameArea[tile->x][tile->y]->getFillColor() != sf::Color::Transparent)
 			return false;
