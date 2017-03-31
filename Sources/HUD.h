@@ -13,6 +13,7 @@ public:
 	int GetLines() { return clearedLines; }
 	void SetLevel(int level) { this->level = level; }
 	void Draw();
+	void Reset();
 
 private:
 	sf::RenderWindow* window;

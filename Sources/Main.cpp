@@ -4,7 +4,7 @@
 int main()
 {
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(500, 680), "Blocks!");
-
+	window->setVerticalSyncEnabled(true);
 	Game* game = new Game(window);
 
 	while (game->window->isOpen())

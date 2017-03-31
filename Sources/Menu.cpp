@@ -1,31 +1,49 @@
 #include "Menu.h"
 #include <iostream>
 
-Menu::Menu(sf::RenderWindow* window, GameState& gameState, Highscores* scores) : gameState(gameState), scores(scores)
+Menu::Menu(sf::RenderWindow* window, GameState& gameState, Highscores* scores, Soundmanager* soundManager) : gameState(gameState), scores(scores)
 {
 	this->window = window;
+	this->soundManager = soundManager;
 
 	//Get the font
 	font.loadFromFile("Resources/FreeMono.ttf");
 
 	//Initialize main menu
 	playText.setFont(font);
-	playText.setPosition(20, 40);
-	playText.setCharacterSize(40);
+	playText.setCharacterSize(60);
+	playText.setStyle(sf::Text::Bold);
 	playText.setFillColor(sf::Color::Red);
 	playText.setString("Play!");
+	playText.setPosition((500 - playText.getLocalBounds().width) / 2, 250);
 
 	highscoreText.setFont(font);
 	highscoreText.setPosition(20, 100);
-	highscoreText.setCharacterSize(40);
+	highscoreText.setCharacterSize(60);
+	highscoreText.setStyle(sf::Text::Bold);
 	highscoreText.setFillColor(sf::Color::Red);
 	highscoreText.setString("Highscores");
+	highscoreText.setPosition((500 - highscoreText.getLocalBounds().width) / 2, 350);
+
+	exitText.setFont(font);
+	exitText.setCharacterSize(60);
+	exitText.setStyle(sf::Text::Bold);
+	exitText.setFillColor(sf::Color::Red);
+	exitText.setString("Exit");
+	exitText.setPosition((500 - exitText.getLocalBounds().width) / 2, 450);
 
 	gameOverText.setFont(font);
-	gameOverText.setPosition(20, 40);
-	gameOverText.setCharacterSize(20);
+	gameOverText.setCharacterSize(60);
+	gameOverText.setStyle(sf::Text::Bold);
 	gameOverText.setFillColor(sf::Color::Red);
-	gameOverText.setString("Game over!\nPress enter to return to menu.");
+	gameOverText.setString("Game over!");
+	gameOverText.setPosition((500 - gameOverText.getLocalBounds().left - gameOverText.getLocalBounds().width) / 2, 200);
+
+	gameOverLabel.setFont(font);
+	gameOverLabel.setCharacterSize(20);
+	gameOverLabel.setFillColor(sf::Color::Red);
+	gameOverLabel.setString("Press enter to return to menu.");
+	gameOverLabel.setPosition((500 - gameOverLabel.getLocalBounds().left - gameOverLabel.getLocalBounds().width) / 2, 275);
 }
 
 void Menu::Draw()
@@ -34,10 +52,12 @@ void Menu::Draw()
 	{
 		window->draw(playText);
 		window->draw(highscoreText);
+		window->draw(exitText);
 	}
 	else if (gameState == GameOver)
 	{
 		window->draw(gameOverText);
+		window->draw(gameOverLabel);
 	}
 	else if (gameState == HighscoreScreen)
 	{
@@ -54,9 +74,14 @@ void Menu::Update()
 	if (gameState == MainMenu)
 	{
 		if (checkHoverAndPressed(playText))
+		{
+			soundManager->PlayMusic(false);
 			gameState = Playing;
+		}
 		else if (checkHoverAndPressed(highscoreText))
 			gameState = HighscoreScreen;
+		else if (checkHoverAndPressed(exitText))
+			window->close();
 	}
 
 	if (gameState == HighscoreScreen)
@@ -86,6 +111,7 @@ bool Menu::checkHoverAndPressed(sf::Text& text)
 		//Check if player pressed the text
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
+			soundManager->PlaySound("Click");
 			return true;
 		}
 
@@ -104,20 +130,22 @@ void Menu::updateHighscores()
 	highscoreLabels.clear();
 	highscores = scores->GetHighscores();
 
+	int i = 1;
 	for (std::string score : highscores)
 	{
 		sf::Text label;
 		label.setFont(font);
 		label.setCharacterSize(20);
 		label.setFillColor(sf::Color::Red);
-		label.setString(score);
+		label.setString(std::to_string(i) + ". " + score);
 		
 		if (highscoreLabels.empty())
-			label.setPosition(20, 20);
+			label.setPosition(195, 180);
 		else
-			label.setPosition(20, highscoreLabels.back().getPosition().y + highscoreLabels.back().getLocalBounds().height + 15);
+			label.setPosition(195, highscoreLabels.back().getPosition().y + highscoreLabels.back().getLocalBounds().height + 15);
 		
 		highscoreLabels.push_back(label);
+		i++;
 	}
 
 	highscoreBackText.setFont(font);

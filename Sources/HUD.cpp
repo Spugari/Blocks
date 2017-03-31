@@ -38,3 +38,9 @@ void HUD::Draw()
 	window->draw(lineCounter);
 	window->draw(levelCounter);
 }
+
+void HUD::Reset()
+{
+	clearedLines = 0;
+	level = 1;
+}

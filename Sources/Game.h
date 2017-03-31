@@ -11,6 +11,7 @@
 #include "Menu.h"
 #include "Gamestate.h"
 #include "Highscores.h"
+#include <SFML/Audio.hpp>
 
 class Game
 {
@@ -64,6 +65,7 @@ private:
 	bool dropActiveBlock(int time);
 	//std::map<unsigned, GameObject*> drawnObjects;
 	sf::Clock clock;
+	sf::Clock blockTimer;
 	sf::Clock animTimer;
 	sf::RectangleShape* gameArea[10][22];
 	void drawGameArea();
@@ -80,6 +82,9 @@ private:
 	std::vector<int> linesToDelete;
 	void checkGameOver();
 	Menu menu;
+	Soundmanager soundManager;
 	Highscores highscore;
 	void restart();
+	sf::Texture logoTex;
+	sf::Sprite logoSprite;
 };

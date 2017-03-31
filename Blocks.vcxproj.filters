@@ -42,6 +42,9 @@
     <ClInclude Include="Sources\Highscores.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Soundmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Blocks.rc">
@@ -74,6 +77,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Highscores.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Soundmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

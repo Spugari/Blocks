@@ -1,13 +1,21 @@
 #include "Game.h"
 
-Game::Game(sf::RenderWindow* window) : hud(window), menu(window, gameState, &highscore)
+Game::Game(sf::RenderWindow* window) : hud(window), menu(window, gameState, &highscore, &soundManager)
 {
 	this->window = window;
 	//this->grid = new Grid(this->window);
 	this->grid = new Grid(window);
 
+	if (!logoTex.loadFromFile("Resources/Logo.png"))
+		std::cout << "Error loading logo.png\n";
+	else
+	{
+		logoSprite.setTexture(logoTex);
+		logoSprite.setPosition(140, 40);
+	}
 
 	clock.restart();
+	blockTimer.restart();
 
 	//Clear gamearea
 
@@ -51,13 +59,14 @@ Game::~Game()
 void Game::Draw()
 {
 	this->window->clear();
-
-	if (gameState == GameState::MainMenu || gameState == GameOver || gameState == HighscoreScreen)
+	
+	if (gameState == MainMenu || gameState == GameOver || gameState == HighscoreScreen)
 	{
+		this->window->draw(logoSprite);
 		menu.Draw();
 	}
 
-	if (gameState == GameState::Playing || gameState == Animating)
+	if (gameState == Playing || gameState == Animating)
 	{
 		for (int i = 0; i < 220; i++)
 		{
@@ -73,7 +82,7 @@ void Game::Draw()
 
 void Game::Update()
 {
-	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? (550 - hud.GetLevel() * 50)  / 3 : 550 - hud.GetLevel() * 50;
+	int dropTime = (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) ? 75 : 550 - hud.GetLevel() * 50;
 
 	if (gameState == GameState::Playing)
 	{
@@ -191,7 +200,7 @@ bool Game::spawnBlock()
 {
 	activeBlock.clear();
 
-	switch (clock.getElapsedTime().asMicroseconds() % 7)
+	switch (blockTimer.getElapsedTime().asMicroseconds() % 7)
 	{
 		case 0:
 		{
@@ -466,6 +475,7 @@ void Game::delFullLines()
 
 	lineAnim = new LineAnimation(tiles);
 	gameState = GameState::Animating;
+	soundManager.PlaySound("Clear");
 }
 
 void Game::deleteLine(int index)
@@ -765,8 +775,10 @@ void Game::checkGameOver()
 		{
 			if (gameArea[j][i]->getFillColor() != sf::Color::Transparent)
 			{
+				soundManager.PlayMusic(true);
 				gameState = GameState::GameOver;
    				highscore.AddHighscore(hud.GetLines());
+				soundManager.PlaySound("Gameover");
 				return;
 			}
 		}
@@ -782,4 +794,6 @@ void Game::restart()
 		gameArea[i / 22][i % 22]->setSize(sf::Vector2f(30.0f, 30.0f));
 		gameArea[i / 22][i % 22]->setPosition(sf::Vector2f(10.0f + (i / 22) * 30.0f, 10.0f + (i % 22) * 30.0f));
 	}
+
+	hud.Reset();
 }
